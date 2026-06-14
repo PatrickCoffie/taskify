@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Taskify</title>
+
+    <style>
+        body {
+            font-family: Arial;
+            margin: 0;
+        }
+
+        /* TOP BAR */
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px;
+            background: #222;
+            color: white;
+        }
+
+        .tabs a {
+            margin-left: 15px;
+            color: white;
+            text-decoration: none;
+        }
+
+        /* HAMBURGER */
+        .menu {
+            cursor: pointer;
+        }
+
+        .sidebar {
+            display: none;
+            position: absolute;
+            background: #f4f4f4;
+            padding: 10px;
+            width: 200px;
+        }
+
+        /* FORM */
+        form {
+            padding: 15px;
+        }
+
+        input, select, button {
+            padding: 8px;
+            margin: 5px;
+        }
+
+        /* TASK LIST */
+        ul {
+            list-style: none;
+            padding: 15px;
+        }
+
+        li {
+            background: #eee;
+            padding: 10px;
+            margin-bottom: 8px;
+        }
+
+    </style>
+</head>
+
+<body>
+
+<!-- TOP BAR -->
+<div class="topbar">
+    <div class="menu" onclick="toggleMenu()">☰</div>
+
+    <div class="tabs">
+        <a href="/">Home</a>
+        <a href="#">Completed</a>
+        <a href="#">Add New</a>
+    </div>
+</div>
+
+<!-- SIDEBAR -->
+<div id="sidebar" class="sidebar">
+    <p><b>Categories</b></p>
+    <p>Work</p>
+    <p>Personal</p>
+    <p>Wish List</p>
+    <p>Birthday</p>
+</div>
+
+<!-- ADD TASK -->
+<form method="POST" action="/add/">
+    {% csrf_token %}
+    <input type="text" name="title" placeholder="Enter task" required>
+
+    <select name="category">
+        <option value="work">Work</option>
+        <option value="personal">Personal</option>
+        <option value="wishlist">Wish List</option>
+        <option value="birthday">Birthday</option>
+    </select>
+
+    <button type="submit">Add</button>
+</form>
+
+<!-- TASK LIST -->
+<ul>
+    {% for task in tasks %}
+        <li>
+            {{ task.title }} ({{ task.category }})
+
+            {% if not task.completed %}
+                <a href="/complete/{{ task.id }}/">✔</a>
+            {% else %}
+                ✔ Completed
+            {% endif %}
+        </li>
+    {% endfor %}
+</ul>
+
+<script>
+function toggleMenu() {
+    let sidebar = document.getElementById("sidebar");
+    sidebar.style.display =
+        sidebar.style.display === "block" ? "none" : "block";
+}
+</script>
+
+</body>
+</html>
